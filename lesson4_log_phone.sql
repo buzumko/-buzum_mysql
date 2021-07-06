@@ -1,0 +1,11 @@
+USE vk;
+
+SET FOREIGN_KEY_CHECKS=0;
+ 
+-- Создаем собственное правило
+-- ALTER TABLE users ADD CONSTRAINT phone_check CHECK (REGEXP_LIKE(phone, '^\\+7[0-9]{10}$'));
+
+UPDATE users SET phone = CONCAT('+7', 9000000000 + FLOOR(RAND() * 999999999));
+SELECT CONCAT('+7', 9000000000 + FLOOR(RAND() * 999999999));
+
+SET FOREIGN_KEY_CHECKS=1;
