@@ -6,29 +6,29 @@ USE shop;
 DROP TABLE IF EXISTS catalogs;
 CREATE TABLE catalogs (
   id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) COMMENT 'Название раздела'
-) COMMENT = 'Разделы интернет магазина';
+  name VARCHAR(255) COMMENT 'РќР°Р·РІР°РЅРёРµ СЂР°Р·РґРµР»Р°'
+) COMMENT = 'Р Р°Р·РґРµР»С‹ РёРЅС‚РµСЂРЅРµС‚ РјР°РіР°Р·РёРЅР°';
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) COMMENT 'Имя покупателя',
-  birthday_at DATE COMMENT 'Дата рождения',
+  name VARCHAR(255) COMMENT 'РРјСЏ РїРѕРєСѓРїР°С‚РµР»СЏ',
+  birthday_at DATE COMMENT 'Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) COMMENT = 'Покупатели';
+) COMMENT = 'РџРѕРєСѓРїР°С‚РµР»Рё';
 
 DROP TABLE IF EXISTS products;
 CREATE TABLE products (
   id SERIAL PRIMARY KEY, 
-  name VARCHAR(255) COMMENT 'Название',
-  description TEXT COMMENT 'Описание',
-  price DECIMAL (11,2) COMMENT 'Цена',
+  name VARCHAR(255) COMMENT 'РќР°Р·РІР°РЅРёРµ',
+  description TEXT COMMENT 'РћРїРёСЃР°РЅРёРµ',
+  price DECIMAL (11,2) COMMENT 'Р¦РµРЅР°',
   catalog_id INT UNSIGNED,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY index_of_catalog_id(catalog_id)
-) COMMENT = 'Товарные позиции';
+) COMMENT = 'РўРѕРІР°СЂРЅС‹Рµ РїРѕР·РёС†РёРё';
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders (
@@ -37,46 +37,46 @@ CREATE TABLE orders (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY index_of_user_id(user_id)
-) COMMENT = 'Заказы';
+) COMMENT = 'Р—Р°РєР°Р·С‹';
 
 DROP TABLE IF EXISTS orders_products;
 CREATE TABLE orders_products (
   id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   order_id INT UNSIGNED,
   product_id INT UNSIGNED,
-  total INT UNSIGNED DEFAULT 1 COMMENT 'Количество заказанных товарных позиций',
+  total INT UNSIGNED DEFAULT 1 COMMENT 'РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РєР°Р·Р°РЅРЅС‹С… С‚РѕРІР°СЂРЅС‹С… РїРѕР·РёС†РёР№',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) COMMENT = 'Состав заказа';
+) COMMENT = 'РЎРѕСЃС‚Р°РІ Р·Р°РєР°Р·Р°';
 
 DROP TABLE IF EXISTS discounts;
 CREATE TABLE discounts (
   id SERIAL PRIMARY KEY, 
   user_id INT UNSIGNED,
   product_id INT UNSIGNED,
-  discount FLOAT UNSIGNED COMMENT 'Величина скидки от 0.0 до 1.0',
+  discount FLOAT UNSIGNED COMMENT 'Р’РµР»РёС‡РёРЅР° СЃРєРёРґРєРё РѕС‚ 0.0 РґРѕ 1.0',
   finished_at DATETIME NULL,
   started_at DATETIME NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY index_of_user_id(user_id),
   KEY index_of_product_id(product_id)
-) COMMENT = 'Скидки';
+) COMMENT = 'РЎРєРёРґРєРё';
 
 DROP TABLE IF EXISTS storehouses;
 CREATE TABLE storehouses (
   id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) COMMENT 'Название',
+  name VARCHAR(255) COMMENT 'РќР°Р·РІР°РЅРёРµ',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) COMMENT = 'Склады';
+) COMMENT = 'РЎРєР»Р°РґС‹';
 
 DROP TABLE IF EXISTS storehouses_products;
 CREATE TABLE storehouses_products (
   id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   storehouse_id INT UNSIGNED,
   product_id INT UNSIGNED,
-  value INT UNSIGNED COMMENT 'Запас товарной позиции на складе',
+  value INT UNSIGNED COMMENT 'Р—Р°РїР°СЃ С‚РѕРІР°СЂРЅРѕР№ РїРѕР·РёС†РёРё РЅР° СЃРєР»Р°РґРµ',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) COMMENT = 'Запасы на складе';
+) COMMENT = 'Р—Р°РїР°СЃС‹ РЅР° СЃРєР»Р°РґРµ';
