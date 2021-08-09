@@ -1,3 +1,6 @@
+-- Здесь содержатся скрипты на создание таблиц базы edu_environment
+
+
 DROP DATABASE IF EXISTS edu_environment;
 CREATE DATABASE edu_environment;
 
@@ -138,7 +141,7 @@ ALTER TABLE courses ADD CONSTRAINT fk_courses_course_id FOREIGN KEY (course_name
 DROP TABLE IF EXISTS department_teachers;
 -- Таблица связи кафедр и преподавателей
 CREATE TABLE department_teachers (
-  department_id INT UNSIGNED NOT NULL COMMENT "Ссылка на кафедру",
+  department_id INT UNSIGNED NOT NULL UNIQUE COMMENT "Ссылка на кафедру",
   teacher_id INT UNSIGNED NOT NULL COMMENT "Ссылка на преподавателя",
   teacher_position INT UNSIGNED NOT NULL COMMENT "Ссылка на должность преподавателя",
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки", 
@@ -285,91 +288,4 @@ CREATE TABLE logs_tk (
 ) ENGINE = Archive;
 
 SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'edu_environment';
-
-
-DROP TRIGGER task_complete_ins;
-
-DELIMITER //
-
-CREATE TRIGGER task_complete_ins AFTER INSERT ON task_complete
-FOR EACH ROW
-BEGIN 
-	DECLARE status_complete_id_v INT;
-	DECLARE last_user_id_v INT;
-	DECLARE score_v INT;
-	SELECT user_id INTO last_user_id_v FROM task_complete ORDER BY id DESC LIMIT 1;
-	SELECT status_complete_id INTO status_complete_id_v FROM task_complete ORDER BY id DESC LIMIT 1;
-    SELECT score INTO score_v FROM task_complete ORDER BY id DESC LIMIT 1;
-	INSERT INTO logs_tk (last_user_id, status_complete_id, score) VALUES
-  (last_user_id_v, status_complete_id_v, score_v);
-
-END
-//
-
-DELIMITER ;
-
-DROP TRIGGER task_complete_upd;
-
-DELIMITER //
-
-CREATE TRIGGER task_complete_upd AFTER UPDATE ON task_complete
-FOR EACH ROW
-BEGIN 
-	DECLARE status_complete_id_v INT;
-	DECLARE last_user_id_v INT;
-	DECLARE score_v INT;
-	SELECT user_id INTO last_user_id_v FROM task_complete ORDER BY id DESC LIMIT 1;
-	SELECT status_complete_id INTO status_complete_id_v FROM task_complete ORDER BY id DESC LIMIT 1;
-    SELECT score INTO score_v FROM task_complete ORDER BY id DESC LIMIT 1;
-	INSERT INTO logs_tk (last_user_id, status_complete_id, score) VALUES
-  (last_user_id_v, status_complete_id_v, score_v);
-
-END
-//
-
-DELIMITER ;
-
-
-DROP TRIGGER update_courses;
-
-drop trigger ins_courses;
-drop trigger update_courses;
-
-DELIMITER //
-
-CREATE TRIGGER ins_courses BEFORE INSERT ON courses
-FOR EACH ROW
-BEGIN 
-	DECLARE status_user_v INT;
-	DECLARE last_user_id_v INT;
-	SET last_user_id_v = NEW.teacher_user_id;
-	SELECT user_status_id INTO status_user_v FROM profiles p WHERE p.user_id = last_user_id_v;
-	IF(status_user_v!=2) THEN
-		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'Пользователь должен быть преподавателем';
-	END IF;
-
-END
-//
-DELIMITER ;
-
-DELIMITER //
-
-CREATE TRIGGER update_courses BEFORE UPDATE ON courses
-FOR EACH ROW
-BEGIN 
-	DECLARE status_user_v INT;
-	DECLARE last_user_id_v INT;
-	SET last_user_id_v = NEW.teacher_user_id;
-	SELECT user_status_id INTO status_user_v FROM profiles p WHERE p.user_id = last_user_id_v;
-	IF(status_user_v!=2) THEN
-		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'Пользователь должен быть преподавателем';
-	END IF;
-
-END
-//
-DELIMITER ;
-
-show triggers;
 
